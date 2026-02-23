@@ -41,12 +41,12 @@ type Screen = 'onboarding' | 'setup' | 'discovering' | 'swiping' | 'summary' | '
 const PROGRAMS: ProgramType[] = ['Business', 'Hospitality & Tourism', 'Health & Care', 'Others'];
 const MotionDiv = motion.div as any;
 
-// --- Helper Functions ---
 const syncToGoogleSheet = async (user: UserProfile, matches: JobProfile[], survey: any) => {
-  if (!GOOGLE_SHEET_URL || GOOGLE_SHEET_URL.includes('https://script.google.com/macros/s/AKfycbzUltI1DYskM9_Mwq3FR9LTtLTYQem9j8cfuV4YzTqgSr53Y90PBTfyR2KJq0DNDNNu/exec') || !GOOGLE_SHEET_URL.startsWith('https://script.google.com/macros/s/AKfycbzUltI1DYskM9_Mwq3FR9LTtLTYQem9j8cfuV4YzTqgSr53Y90PBTfyR2KJq0DNDNNu/exec')) {
-    console.warn("Sync skipped: GOOGLE_SHEET_URL is not configured.");
+  if (!GOOGLE_SHEET_URL) {
+    console.warn("Sync skipped: GOOGLE_SHEET_URL is empty.");
     return;
   }
+
   const payload = {
     name: user.name,
     program: user.program,
@@ -56,13 +56,17 @@ const syncToGoogleSheet = async (user: UserProfile, matches: JobProfile[], surve
     matches: matches.map(m => ({ title: m.title, archetype: m.archetype })),
     survey: survey
   };
+
   try {
     await fetch(GOOGLE_SHEET_URL, {
       method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' }, 
+      mode: 'no-cors', // Critical for sending data directly from a browser to Google Sheets
+      headers: { 
+        'Content-Type': 'text/plain;charset=utf-8' // Bypasses the browser's strict pre-flight checks
+      }, 
       body: JSON.stringify(payload)
     });
+    console.log("Payload sent to Google successfully!");
   } catch (err) {
     console.error("Sync failed:", err);
   }
