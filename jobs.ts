@@ -67,18 +67,18 @@ export const getAvatar = (seed: string): string => {
 };
 
 export const PROFESSIONAL_SEEDS = [
-  'https://i.imgur.com/vt8kXBw.jpeg', 
-  'https://i.imgur.com/l6JSTRj.jpeg', 
-  'https://i.imgur.com/ocP7QOa.jpeg',
-  'https://i.imgur.com/aVeKRBC.jpeg', 
-  'https://i.imgur.com/tIJT4M5.jpeg', 
-  'https://i.imgur.com/XPerVBe.jpeg',
-  'https://i.imgur.com/w7ccOVZ.jpeg', 
-  'https://i.imgur.com/Rcg3p92.jpeg', 
-  'https://i.imgur.com/ju4YqQA.jpeg',
-  'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&h=200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&h=200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=200&h=200&auto=format&fit=crop'
+  'https://res.cloudinary.com/dtbejb9lk/image/upload/v1771840554/4_lfr8tg.jpg', 
+  'https://res.cloudinary.com/dtbejb9lk/image/upload/v1771840554/11_gq3bij.jpg', 
+  'https://res.cloudinary.com/dtbejb9lk/image/upload/v1771840554/5_rbotrf.jpg',
+  'https://res.cloudinary.com/dtbejb9lk/image/upload/v1771840554/6_n5xko4.jpg', 
+  'https://res.cloudinary.com/dtbejb9lk/image/upload/v1771840554/10_tymspw.jpg', 
+  'https://res.cloudinary.com/dtbejb9lk/image/upload/v1771840554/7_vszm0u.jpg',
+  'https://res.cloudinary.com/dtbejb9lk/image/upload/v1771840553/9_tbiqe6.jpg', 
+  'https://res.cloudinary.com/dtbejb9lk/image/upload/v1771840553/2_nfod8k.jpg', 
+  'https://res.cloudinary.com/dtbejb9lk/image/upload/v1771840553/8_fy4iim.jpg',
+  'https://res.cloudinary.com/dtbejb9lk/image/upload/v1771840554/12_rtwg5k.jpg',
+  'https://res.cloudinary.com/dtbejb9lk/image/upload/v1771840553/Screenshot_2026-02-19_123300_gfveyh.jpg',
+  'https://res.cloudinary.com/dtbejb9lk/image/upload/v1771840553/3_yirfep.jpg'
 ].map((url, i) => ({ seed: `UserAvatar-${i}`, customUrl: url }));
 
 export const ARCHETYPE_DEFAULTS: Record<ArchetypeType, Partial<JobProfile>> = {

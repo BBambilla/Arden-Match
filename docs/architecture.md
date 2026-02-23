@@ -18,8 +18,8 @@ graph TD
     end
     
     subgraph Data Persistence
-    UI -- Survey Answers --> GoogleSheets[Google Apps Script]
-    Admin[Admin User] -- View Data --> Sheet[Google Sheet]
+    UI -- Survey Answers --> GoogleSheets[https://script.google.com/macros/s/AKfycbzUltI1DYskM9_Mwq3FR9LTtLTYQem9j8cfuV4YzTqgSr53Y90PBTfyR2KJq0DNDNNu/exec]
+    Admin[Admin User] -- View Data --> Sheet[https://script.google.com/macros/s/AKfycbzUltI1DYskM9_Mwq3FR9LTtLTYQem9j8cfuV4YzTqgSr53Y90PBTfyR2KJq0DNDNNu/exec]
     end
 ```
 
