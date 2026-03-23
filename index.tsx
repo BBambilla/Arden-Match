@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { Briefcase, Heart, X, Check, ArrowRight, RefreshCw, Star, MapPin, Search, Download, Sparkles, ExternalLink, ClipboardCheck, GraduationCap, MessageSquare, Loader2, Lightbulb, Link as LinkIcon } from 'lucide-react';
 import { GoogleGenAI } from '@google/genai';
+import html2pdf from 'html2pdf.js';
 import { jobs, JobProfile, ProgramType, specialPositions, ArchetypeType, ARCHETYPE_DEFAULTS, getAvatar, PROFESSIONAL_SEEDS, JOB_CLOUDINARY_POOL } from './jobs';
 
 // --- Configuration ---
@@ -43,7 +44,7 @@ const MotionDiv = motion.div as any;
 
 // --- Helper Functions ---
 const syncToGoogleSheet = async (user: UserProfile, matches: JobProfile[], survey: any) => {
-  if (!GOOGLE_SHEET_URL || GOOGLE_SHEET_URL.includes('https://script.google.com/macros/s/AKfycbzUltI1DYskM9_Mwq3FR9LTtLTYQem9j8cfuV4YzTqgSr53Y90PBTfyR2KJq0DNDNNu/exec') || !GOOGLE_SHEET_URL.startsWith('https://script.google.com/macros/s/AKfycbzUltI1DYskM9_Mwq3FR9LTtLTYQem9j8cfuV4YzTqgSr53Y90PBTfyR2KJq0DNDNNu/exec')) {
+  if (!GOOGLE_SHEET_URL || !GOOGLE_SHEET_URL.startsWith('https://script.google.com/macros/s/')) {
     console.warn("Sync skipped: GOOGLE_SHEET_URL is not configured.");
     return;
   }
@@ -92,6 +93,8 @@ const ProfessionalAvatar = ({ src, className, alt = "avatar" }: { src: string, c
       alt={alt} 
       onError={() => setError(true)}
       loading="eager"
+      crossOrigin="anonymous"
+      referrerPolicy="no-referrer"
     />
   );
 };
@@ -502,9 +505,20 @@ const App = () => {
     if (!reportRef.current || !user) return;
     setIsDownloading(true);
     try {
-      // @ts-ignore
-      await window.html2pdf().set({ margin: 10, filename: `ArdenMatch_${user.name}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { format: 'a4' } }).from(reportRef.current).save();
-    } catch (err) { window.print(); } finally { setIsDownloading(false); }
+      const opt = {
+        margin: 10,
+        filename: `ArdenMatch_${user.name}.pdf`,
+        image: { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, allowTaint: true },
+        jsPDF: { format: 'a4' }
+      };
+      await html2pdf().set(opt).from(reportRef.current).save();
+    } catch (err) { 
+      console.error("PDF generation failed:", err);
+      window.print(); 
+    } finally { 
+      setIsDownloading(false); 
+    }
   };
 
   return (
@@ -526,28 +540,28 @@ const App = () => {
                   <p className="text-arden-teal text-xs font-black tracking-widest">Personal Discovery</p>
                 </div>
                 <div className="px-8 -mt-10 space-y-8 pb-32">
-                  <div className="bg-white rounded-[2rem] p-8 shadow-2xl border space-y-4">
+                  <div className="bg-white rounded-[2rem] p-8 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] border border-arden-bluegrey space-y-4">
                     <div className="flex items-center gap-3"><Star className="text-arden-yellow fill-arden-yellow" size={20} /><h3 className="text-xs font-black uppercase text-arden-teal tracking-widest">AI Persona</h3></div>
                     <h2 className="text-2xl font-black leading-none">{persona?.title || 'Leader'}</h2>
-                    <p className="text-sm font-bold text-gray-500 italic border-l-4 border-arden-yellow pl-4">{persona?.analysis}</p>
+                    <p className="text-sm font-bold text-arden-grey italic border-l-4 border-arden-yellow pl-4">{persona?.analysis}</p>
                   </div>
                   
                   <div className="space-y-4">
-                    <h3 className="text-[10px] font-black uppercase tracking-widest border-b pb-2">Your Career Matches</h3>
-                    <div className="grid gap-3">{matches.map((m, i) => (<div key={i} className="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border"><div className="w-10 h-10 rounded-xl overflow-hidden bg-white"><ProfessionalAvatar src={m.image} className="w-full h-full object-cover" /></div><div className="flex-1"><p className="text-xs font-black leading-tight">{m.title}</p><p className="text-[9px] font-black uppercase text-arden-teal">{m.archetype}</p></div><Check className="text-arden-teal" size={16} /></div>))}</div>
+                    <h3 className="text-[10px] font-black uppercase tracking-widest border-b border-arden-bluegrey pb-2">Your Career Matches</h3>
+                    <div className="grid gap-3">{matches.map((m, i) => (<div key={i} className="flex items-center gap-4 bg-arden-offwhite p-4 rounded-2xl border border-arden-bluegrey"><div className="w-10 h-10 rounded-xl overflow-hidden bg-white"><ProfessionalAvatar src={m.image} className="w-full h-full object-cover" /></div><div className="flex-1"><p className="text-xs font-black leading-tight">{m.title}</p><p className="text-[9px] font-black uppercase text-arden-teal">{m.archetype}</p></div><Check className="text-arden-teal" size={16} /></div>))}</div>
                   </div>
 
                   <div className="space-y-4 pt-4">
-                    <h3 className="text-[10px] font-black uppercase tracking-widest border-b pb-2">Your Professional Toolkit</h3>
+                    <h3 className="text-[10px] font-black uppercase tracking-widest border-b border-arden-bluegrey pb-2">Your Professional Toolkit</h3>
                     <div className="space-y-3">
                       {RESOURCES.map((r, i) => (
-                        <div key={i} className="bg-arden-bluegrey/10 p-4 rounded-2xl border border-arden-bluegrey/20 flex items-start gap-4">
+                        <div key={i} className="bg-[rgba(219,230,235,0.1)] p-4 rounded-2xl border border-[rgba(219,230,235,0.2)] flex items-start gap-4">
                           <div className="w-8 h-8 bg-arden-navy text-white rounded-lg flex items-center justify-center shrink-0">
                             {r.icon}
                           </div>
                           <div>
                             <h4 className="text-xs font-black text-arden-navy">{r.title}</h4>
-                            <p className="text-[10px] font-bold text-gray-500 leading-tight mb-1">{r.desc}</p>
+                            <p className="text-[10px] font-bold text-arden-grey leading-tight mb-1">{r.desc}</p>
                             <div className="flex items-center gap-1 text-[9px] font-black text-arden-teal uppercase">
                                <LinkIcon size={10} /> {r.link.replace('https://', '')}
                             </div>
