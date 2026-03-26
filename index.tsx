@@ -393,58 +393,99 @@ const SummaryScreen = ({ matches, onContinue }: { matches: JobProfile[], onConti
 };
 
 const SurveyScreen = ({ onComplete }: { onComplete: (data: any) => void }) => {
-  const [answers, setAnswers] = useState<any>({ q1: '', q2: '', q3: '', q3_other: '', q4: '', q5: '', q6: '', q6_other: '', q7: '' });
+  const [answers, setAnswers] = useState<any>({ q1: '', q2: '', q3: '', q4: '', q5: '', q6: '', q7: '', q8: '' });
   
   const isComplete = 
     answers.q1 && 
     answers.q2 && 
-    (answers.q3 === 'Others' ? answers.q3_other.trim() : answers.q3) && 
+    answers.q3 && 
     answers.q4 && 
     answers.q5 && 
-    (answers.q6 === 'Others' ? answers.q6_other.trim() : answers.q6);
-
-  const questions = [
-    { id: 'q1', text: "How many job titles were new to you today?", guide: "Reflect on whether this experience introduced you to unexpected paths.", options: ["Zero", "1-2", "3+"] },
-    { id: 'q2', text: "Accuracy of AI persona?", guide: "Consider if the AI analysis felt personally relevant to your profile.", options: ["Accurate", "Mostly", "Generic"] },
-    { id: 'q3', text: "Top takeaway?", guide: "Identify the most significant action or feeling you have right now.", options: ["Update CV", "Learn AI", "Confident", "Confused", "Others"] },
-    { id: 'q4', text: "App experience vs standard board?", guide: "Tell us if the swipe-style interface made career searching more engaging.", options: ["Fun but less info", "Fun and informative", "Annoying"] },
-    { id: 'q5', text: "Verdict for CareersFest?", guide: "Help us decide if this should become a staple at future Arden events.", options: ["YES", "Maybe", "No"] },
-    { id: 'q6', text: "Feature for next update?", guide: "Vote for the one addition that would most improve your experience.", options: ["Real Links", "Save", "Chat", "Others"] }
-  ];
+    answers.q6 !== '' && 
+    answers.q7;
 
   return (
     <div className="h-full bg-white overflow-y-auto no-scrollbar p-8 space-y-12 pb-32 text-arden-navy">
-      <div className="space-y-2">
-        <h2 className="text-xl md:text-2xl font-black text-arden-navy">CareerFest<br/><span className="text-arden-teal">Insight.</span></h2>
-        <p className="text-[10px] font-bold text-gray-500 leading-snug italic opacity-80">Your honest feedback helps us shape the future of Arden's career support for you and your peers.</p>
+      <div className="space-y-4">
+        <h2 className="text-2xl md:text-3xl font-black text-arden-navy">Arden Match<br/><span className="text-arden-teal">Feedback Survey</span></h2>
+        <p className="text-xs font-bold text-gray-500 leading-snug italic opacity-80">Thanks for using Arden Match! Please take a few seconds to tell us how we did so we can improve the experience.</p>
       </div>
-      {questions.map((q, idx) => (
-        <div key={q.id} className="space-y-4">
-          <p className="text-sm font-black text-arden-navy leading-snug"><span className="text-arden-teal">Q{idx+1}.</span> {q.text}</p>
-          <p className="text-[10px] font-bold text-gray-400 -mt-3 leading-tight italic">{q.guide}</p>
+
+      <div className="space-y-8">
+        <div className="space-y-4">
+          <p className="text-sm font-black text-arden-navy leading-snug"><span className="text-arden-teal">1.</span> Have you connected with a relevant career opportunity through the app?</p>
           <div className="flex flex-col gap-3">
-            {q.options.map(opt => (
-              <button key={opt} onClick={() => setAnswers({...answers, [q.id]: opt})} className={`p-4 rounded-2xl text-left text-xs font-bold transition-all border-2 ${answers[q.id] === opt ? 'bg-arden-navy text-white border-arden-navy shadow-lg' : 'bg-arden-bluegrey/20 border-transparent text-gray-600'}`}>{opt}</button>
+            {["Yes", "No"].map(opt => (
+              <button key={opt} onClick={() => setAnswers({...answers, q1: opt})} className={`p-4 rounded-2xl text-left text-xs font-bold transition-all border-2 ${answers.q1 === opt ? 'bg-arden-navy text-white border-arden-navy shadow-lg' : 'bg-arden-bluegrey/20 border-transparent text-gray-600'}`}>{opt}</button>
             ))}
           </div>
-          {q.id === 'q3' && answers.q3 === 'Others' && (
-             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="pt-2">
-                <textarea value={answers.q3_other} onChange={(e) => setAnswers({...answers, q3_other: e.target.value})} placeholder="Tell us your takeaway..." className="w-full p-4 rounded-2xl bg-arden-bluegrey/20 text-xs font-bold text-arden-navy min-h-[100px]" />
-             </motion.div>
-          )}
-          {q.id === 'q6' && answers.q6 === 'Others' && (
-             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="pt-2">
-                <textarea value={answers.q6_other} onChange={(e) => setAnswers({...answers, q6_other: e.target.value})} placeholder="Tell us more..." className="w-full p-4 rounded-2xl bg-arden-bluegrey/20 text-xs font-bold text-arden-navy min-h-[100px]" />
-             </motion.div>
-          )}
         </div>
-      ))}
-      <div className="space-y-4">
-        <p className="text-sm font-black text-arden-navy leading-snug">Q7. Glitches or ideas?</p>
-        <p className="text-[10px] font-bold text-gray-400 -mt-3 leading-tight italic">Help us fix bugs or brainstorm new ways to help students.</p>
-        <textarea value={answers.q7} onChange={(e) => setAnswers({...answers, q7: e.target.value})} placeholder="Type here..." className="w-full p-5 rounded-3xl bg-arden-bluegrey/20 text-sm font-bold text-arden-navy min-h-[140px]" />
+
+        <div className="space-y-4">
+          <p className="text-sm font-black text-arden-navy leading-snug"><span className="text-arden-teal">2.</span> How accurately do your recommended matches align with your actual skills and career goals?</p>
+          <div className="flex flex-col gap-3">
+            {["1 - Completely inaccurate", "2", "3", "4", "5 - Highly accurate"].map(opt => (
+              <button key={opt} onClick={() => setAnswers({...answers, q2: opt})} className={`p-4 rounded-2xl text-left text-xs font-bold transition-all border-2 ${answers.q2 === opt ? 'bg-arden-navy text-white border-arden-navy shadow-lg' : 'bg-arden-bluegrey/20 border-transparent text-gray-600'}`}>{opt}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <p className="text-sm font-black text-arden-navy leading-snug"><span className="text-arden-teal">3.</span> Compared to traditional job boards, how fast and easy is it to find relevant opportunities on this app?</p>
+          <div className="flex flex-col gap-3">
+            {["Much faster and easier", "Somewhat faster and easier", "About the same", "Slower and more difficult"].map(opt => (
+              <button key={opt} onClick={() => setAnswers({...answers, q3: opt})} className={`p-4 rounded-2xl text-left text-xs font-bold transition-all border-2 ${answers.q3 === opt ? 'bg-arden-navy text-white border-arden-navy shadow-lg' : 'bg-arden-bluegrey/20 border-transparent text-gray-600'}`}>{opt}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <p className="text-sm font-black text-arden-navy leading-snug"><span className="text-arden-teal">4.</span> How helpful is this app in helping you discover career paths you hadn't previously considered?</p>
+          <div className="flex flex-col gap-3">
+            {["1 - Not helpful at all", "2", "3", "4", "5 - Extremely helpful"].map(opt => (
+              <button key={opt} onClick={() => setAnswers({...answers, q4: opt})} className={`p-4 rounded-2xl text-left text-xs font-bold transition-all border-2 ${answers.q4 === opt ? 'bg-arden-navy text-white border-arden-navy shadow-lg' : 'bg-arden-bluegrey/20 border-transparent text-gray-600'}`}>{opt}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <p className="text-sm font-black text-arden-navy leading-snug"><span className="text-arden-teal">5.</span> How engaging do you find the "swipe-to-match" interface for job career exploration?</p>
+          <div className="flex flex-col gap-3">
+            {["1 - Frustrating or Distracting", "2", "3", "4", "5 - Highly intuitive and fun"].map(opt => (
+              <button key={opt} onClick={() => setAnswers({...answers, q5: opt})} className={`p-4 rounded-2xl text-left text-xs font-bold transition-all border-2 ${answers.q5 === opt ? 'bg-arden-navy text-white border-arden-navy shadow-lg' : 'bg-arden-bluegrey/20 border-transparent text-gray-600'}`}>{opt}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <p className="text-sm font-black text-arden-navy leading-snug"><span className="text-arden-teal">6.</span> How likely are you to recommend this app to a fellow student?</p>
+          <p className="text-[10px] font-bold text-gray-400 -mt-3 leading-tight italic">0 = Not at all likely, 10 = Extremely likely</p>
+          <div className="flex flex-wrap gap-2">
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(opt => (
+              <button key={opt} onClick={() => setAnswers({...answers, q6: opt.toString()})} className={`w-10 h-10 rounded-xl flex items-center justify-center text-xs font-bold transition-all border-2 ${answers.q6 === opt.toString() ? 'bg-arden-navy text-white border-arden-navy shadow-lg' : 'bg-arden-bluegrey/20 border-transparent text-gray-600'}`}>{opt}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <p className="text-sm font-black text-arden-navy leading-snug"><span className="text-arden-teal">7.</span> Do you feel like this app would be helpful to students outside the Careeer Festival event?</p>
+          <div className="flex flex-col gap-3">
+            {["Yes", "No", "Not sure"].map(opt => (
+              <button key={opt} onClick={() => setAnswers({...answers, q7: opt})} className={`p-4 rounded-2xl text-left text-xs font-bold transition-all border-2 ${answers.q7 === opt ? 'bg-arden-navy text-white border-arden-navy shadow-lg' : 'bg-arden-bluegrey/20 border-transparent text-gray-600'}`}>{opt}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <p className="text-sm font-black text-arden-navy leading-snug"><span className="text-arden-teal">8.</span> What is one feature we could add or change to improve your experience?</p>
+          <textarea value={answers.q8} onChange={(e) => setAnswers({...answers, q8: e.target.value})} placeholder="Type here..." className="w-full p-5 rounded-3xl bg-arden-bluegrey/20 text-sm font-bold text-arden-navy min-h-[140px]" />
+        </div>
       </div>
-      <div className="pt-6"><Button onClick={() => onComplete(answers)} disabled={!isComplete} className="w-full bg-arden-navy text-white py-6 shadow-xl">Finalize My Report <Sparkles size={18} /></Button></div>
+
+      <div className="pt-6 space-y-4">
+        <p className="text-xs font-bold text-gray-500 text-center italic">Thank you for your feedback! Good luck with your career search.</p>
+        <Button onClick={() => onComplete(answers)} disabled={!isComplete} className="w-full bg-arden-navy text-white py-6 shadow-xl">Finalize My Report <Sparkles size={18} /></Button>
+      </div>
     </div>
   );
 };
